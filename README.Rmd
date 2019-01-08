@@ -1,0 +1,39 @@
+---
+output: github_document
+bibliography: [extrinsic-predicode.bib]
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+# predicode
+
+Implementations of predictive coding networks are widespread, vary in their terminology, and are not always called predictive coding networks. Their rise in popularity within the neuroscience community is widely associated with @Rao1999, who used them to explain extraclassical effects in V1. A particularly popular important implementation is the free energy model [see @Friston2005], which had been inspired by the Helmholtz machine [@Dayan1995], which had not been called a predictive coding network, but nonetheless corresponded to that concept.
+
+Today, predictive coding as a framework is used to explain various phenomena within the brain. These include mirror neurons [@Kilner2007], binocular rivalry [@Hohwy2008], and self-recognition [@Apps2014]. However, there is no clear consensus on necessary and sufficient conditions for a model to be called predictive coding, calling into question whether this concept is articulated enough to be empirically tested [@Kogo2015]. Indeed, an often-cited weakness of predictive coding is the universality of this concept:
+
+> If you call everything a predictive coding model, then everything is a predictive coding model.
+> 
+> David Heeger [@nyu-debate, 1:10]
+
+Investigations of predictive coding models would benefit from a more coherent presentation that teases out the key components of predictive coding itself as well as the specifics of the presented implementation.
+
+This package therefore has a normative and a descriptive component to serve my investigation of predictive coding models. On the one hand, I argue that predictive coding models should be defined on a computational level (I will discuss my usage of this term below). On the other hand, I compile existing implementations of predictive coding within this framework. This is, for example, the basis for an investigation of their mathematical equivalence. If the interface and my definition of predictive coding prove themselves as useful, the package would also provide a suitable framework to specify and apply predictive coding implementations.
+
+## Installation
+
+You can install the current version of predicode from [Github](https://github.com/sflippl/predicode)
+
+``` r
+# install.packages("devtools")
+devtools::install_github("sflippl/predicode")
+```
+
+## References
