@@ -9,3 +9,14 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+Imports: 
+    rlang,
+    zeallot,
+    glue
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.0
+Suggests: 
+    testthat,
+    covr
+Depends: 
+    R (>= 3.1)

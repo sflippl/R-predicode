@@ -1,5 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+[![Travis build status](https://travis-ci.org/sflippl/predicode.svg?branch=master)](https://travis-ci.org/sflippl/predicode) [![Coverage status](https://codecov.io/gh/sflippl/predicode/branch/master/graph/badge.svg)](https://codecov.io/github/sflippl/predicode?branch=master)
+
 predicode
 =========
 
