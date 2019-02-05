@@ -38,23 +38,6 @@ minimal_hpc <- function(p = NA_integer_, q = NA_integer_, r = NA_integer_,
 
 #' @describeIn minimal_ia
 
-minimal_fnn <- function(p = NA_integer_, q = NA_integer_, r = NA_integer_,
-                        x = NULL, y = NULL,
-                        theta = c(`0` = NA_real_, `1` = NA_real_)) {
-    c(p, q, r) <- get_minimal_dimensions(p = p, q = q, r = r)
-    checkmate::checkNumber(p, lower = 0, finite = TRUE)
-    checkmate::checkNumber(q, lower = 0, finite = TRUE)
-    checkmate::checkNumber(r, lower = 0, finite = TRUE)
-    checkmate::checkNumber(Sigma_X, lower = 0, finite = TRUE)
-    checkmate::checkNumber(Sigma_Y, lower = 0, finite = TRUE)
-    checkmate::checkNumber(U, finite = TRUE)
-    checkmate::checkNumber(V, finite = TRUE)
-    assertthat::assert_that(is.null(x) || is.null(y) || nrow(x) == nrow(y))
-    fnn <- list(p = p, q = q, r = r, x = x, y = y, theta = theta)
-    class(fnn) <- c("minimal_fnn", "fnn")
-    fnn
-}
-
 get_minimal_dimensions <- function(
     p = NA_integer_, q = NA_integer_, r = NA_integer_) {
     p <- rlang::as_integer(p)

@@ -12,7 +12,11 @@ LazyData: true
 Imports: 
     rlang,
     zeallot,
-    glue
+    glue,
+    magrittr,
+    checkmate,
+    assertthat,
+    dplyr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.0
 Suggests: 

@@ -40,8 +40,9 @@ test_that("Task elements are correctly recovered", {
     expect_equal(weights(minimal_task_1), 1L)
     expect_equal(input(minimal_task_1), x)
     expect_equal(output(minimal_task_1), y)
+    expect_equal(dim(minimal_task_1), c(p = 1, q = 1, n = 50))
 })
 
 test_that("Task elements are correctly printed", {
-    expect_output(print(minimal_task_1, "p = 1"))
+    expect_output(print(minimal_task_1), "p = 1")
 })
