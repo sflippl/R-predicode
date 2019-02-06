@@ -18,3 +18,7 @@ test_that("FNN elements are correctly recovered", {
 test_that("FNN dimensions are correctly recovered", {
     expect_equal(dim(minimal_fnn_manual), c(p = 1, q = 1, r = 1))
 })
+
+test_that("FNNs are correctly printed", {
+    expect_output(print(minimal_fnn_manual), "p = 1")
+})

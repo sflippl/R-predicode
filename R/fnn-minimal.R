@@ -45,6 +45,8 @@ dim.minimal_fnn <- function(x) {
 
 #' @rdname minimal_fnn
 #'
+#' @inheritParams base::print
+#'
 #' @export
 
 print.minimal_fnn <- function(x, ...) {
@@ -64,6 +66,8 @@ is_minimal_fnn <- function(x) {
 }
 
 #' @rdname minimal_fnn
+#'
+#' @param minimal_fnn a minimal FNN
 #'
 #' @export
 

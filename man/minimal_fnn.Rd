@@ -25,6 +25,12 @@ theta_1(minimal_fnn)
 \item{theta_0}{Input the matrix theta_0}
 
 \item{theta_1}{Input the matrix theta_1}
+
+\item{x}{an object used to select a method.}
+
+\item{...}{further arguments passed to or from other methods.}
+
+\item{minimal_fnn}{a minimal FNN}
 }
 \description{
 A minimal feedforward network estimates a q-dimensional vector Y from a

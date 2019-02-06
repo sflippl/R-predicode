@@ -6,6 +6,11 @@
 \usage{
 input(object, ...)
 }
+\arguments{
+\item{object}{The object to extract the input from, usually a task}
+
+\item{...}{Further arguments provided to the methods}
+}
 \description{
 Extract the input data
 }

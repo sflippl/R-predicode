@@ -79,6 +79,9 @@ weights.minimal_task <- function(object, ...) {
 
 #' @rdname minimal_task
 #'
+#' @param object a minimal task
+#' @param ... Further parameters
+#'
 #' @export
 
 input.minimal_task <- function(object, ...) {

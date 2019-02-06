@@ -6,6 +6,11 @@
 \usage{
 output(object, ...)
 }
+\arguments{
+\item{object}{The object to extract the output from, usually a task}
+
+\item{...}{Further arguments provided to the methods}
+}
 \description{
 Extract the output of the data
 }

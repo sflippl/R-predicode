@@ -27,6 +27,10 @@ is_minimal_task(x)
 \item{y}{Output data}
 
 \item{w}{Weights of the loss function}
+
+\item{object}{a minimal task}
+
+\item{...}{Further parameters}
 }
 \description{
 A minimal task consists of an input and an output dataset. The estimation
