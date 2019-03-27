@@ -17,7 +17,11 @@ Imports:
     checkmate,
     assertthat,
     dplyr,
-    stats
+    stats,
+    purrr,
+    matrixcalc,
+    tibble,
+    pracma
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.0
 Suggests: 
