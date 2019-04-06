@@ -4,10 +4,10 @@
 
 is_analytical <- function(implementation) {
     two_linear <-
-        (architecture_depth(implementation) == 2) &&
-        inherits(hpc_architecture(hpc(implementation)),
+        (architecture_depth(implementation) == 1) &&
+        inherits(hpc_architecture(implementation_hpc(implementation)),
                  "linear_layered_architecture") &&
-        is.matrix(input(hpc(implementation)))
+        is.matrix(hpc_input(implementation_hpc(implementation)))
     if(two_linear) return(TRUE)
     FALSE
 }

@@ -19,7 +19,7 @@ hpc_input(hpc, time = NULL)
 n_samples(hpc)
 }
 \arguments{
-\item{architecture}{an object of class \href{is_architecture()}{architecture}.
+\item{architecture}{an object of class [architecture](is_architecture()).
 Lowest layer of the architecture corresponds to the input.}
 
 \item{input}{the input data. Either a function of time, or a matrix.}

@@ -21,7 +21,7 @@ List of matrices. Default is identity matrices in every layer.}
 \item{implementation}{An implementation}
 }
 \description{
-This function specifies how the \code{\link[=hpc]{hpc()}} network should be implemented:
+This function specifies how the [hpc()] network should be implemented:
 should it use Rao & Ballards model or the Free Energy Principle? What
 assumptions do we make about the covariance matrix and should it be
 learnable?
@@ -29,7 +29,7 @@ learnable?
 \details{
 If you wish to add your own implementation function, you may do so by
 providing a class that subsets the general class 'implementation' and may be
-called by \code{\link[=simulate]{simulate()}}.
+called by [simulate()].
 }
 \section{Functions}{
 \itemize{

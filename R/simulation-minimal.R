@@ -31,31 +31,10 @@ simulate.minimal_implementation <- function(
         is_stopping_rule(instantaneous_signals_stopping_rule)
     )
 
-    # Generate parameters ---------------------------------------------------------
-    generate_parameters <- is.character(init_parameters)
-    if(!generate_parameters) {
-        assert_parameters(init_parameters)
-    }
-    else {
-        init_parameters <-
-            initialize_parameters(
-                structure(list(), class = init_parameters),
-                implementation
-            )
-    }
+    init_parameters <- generate_parameters(init_parameters, implementation)
 
-    # Generate signals ---------------------------------------------------------
-    generate_signals <- is.character(init_signals)
-    if(!generate_signals) {
-        assert_signals(signals, implementation)
-    }
-    else {
-        init_signals <-
-            initialize_signals(
-                structure(list(), class = init_signals),
-                implementation
-            )
-    }
+    init_signals <- generate_signals(init_signals, implementation)
+
     if(instantaneous_signals) {
         init_signals <-
             infer_signals(
@@ -149,96 +128,4 @@ simulate.minimal_implementation <- function(
             )
     }
     simulation
-}
-
-#' Helpers for the minimal simulation
-#'
-#' @name simulate-minimal-helpers
-
-NULL
-
-#' @describeIn simulate-minimal-helpers checks whether parameters are valid
-
-assert_parameters <- function(parameters, implementation) {
-    assertthat::assert_that(
-        is.list(parameters),
-        length(parameters) == architecture_depth(implementation)
-    )
-    purrr::iwalk(
-        parameters,
-        ~ checkmate::check_matrix(
-            .x,
-            mode = "numeric",
-            any.missing = FALSE,
-            nrows = layer_size(architecture(implementation), .y - 1),
-            ncols = layer_size(architecture(implementation), .y)
-        )
-    )
-}
-
-#' @describeIn simulate-minimal-helpers initializes parameters. Extendible by
-#' using the character init_parameters in [simulate()] as a S3 class.
-
-initialize_parameters <- function(method, implementation) {
-    UseMethod("initialize_parameters")
-}
-
-initialize_parameters.randortho <- function(method, implementation) {
-    implementation %>%
-        architecture_depth() %>%
-        seq_len() %>%
-        purrr::map(
-            function(x) {
-                nrows <- layer_size(implementation, x - 1)
-                ncols <- layer_size(implementation, x)
-                pracma::randortho(n = max(nrows, ncols)) %>%
-                    magrittr::extract(seq_len(nrows), seq_len(ncols))
-            }
-        )
-}
-
-#' @describeIn simulate-minimal-helpers checks whether the signals have the
-#' right format
-
-assert_signals <- function(signals, implementation) {
-    assertthat::assert_that(
-        is.list(init_signals),
-        length(init_signals) == architecture_depth(implementation)
-    )
-    init_signals %>%
-        purrr::iwalk(
-            ~ checkmate::assert_numeric(
-                .x,
-                finite = TRUE,
-                any.missing = FALSE,
-                len = layer_size(implementation, .y)
-            )
-        )
-}
-
-#' @describeIn simulate-minimal-helpers initializes signals. Extendible by
-#' using the character init_signals in [simulate()] as a S3 class.
-
-initialize_signals <- function(method, implementation) {
-    UseMethod("initialize_signals")
-}
-
-initialize_signals.randnorm <- function(method, implementation) {
-    n_samples <-
-        implementation %>%
-        implementation_hpc() %>%
-        n_samples()
-    implementation %>%
-        architecture_depth() %>%
-        seq_len() %>%
-        purrr::map(
-            function(x) {
-                implementation %>%
-                    layer_size(x) %>%
-                    runif(min = -1, max = 1) %>%
-                    scale(center = FALSE, scale = TRUE) %>%
-                    rep(n_samples) %>%
-                    matrix(ncol = n_samples)
-            }
-        )
 }

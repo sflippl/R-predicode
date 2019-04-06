@@ -1,39 +1,37 @@
-#' Simulation
+#' Analytical solutions for the network
 #'
-#' This function simulates a particular implementation of a predictive coding
-#' network.
+#' This function provides analytical solutions if they are available.
 #'
-#' @param implementation The implementation we are concerned with
-#' @param stopping_rule a [stopping_rule()]
+#' @param implementation An implementation.
+#' @param stopping_rule A [stopping_rule()]
 #' @param init_signals What is the signal value at time 0? As a string,
 #' provides the random method to draw the parameters. Currently, only "randnorm"
 #' is implemented.
 #' @param init_parameters What is the parameter value at time 0? As a string,
-#' provides the random method to draw the parameters. Currently, only "randortho"
-#' is implemented.
+#' provides the random method to draw the parameters. Currently, only
+#' "randortho" is implemented.
 #' @param fixed_parameters Should the parameters be fixed or can they be
 #' learned?
-#' @param instantaneous_signals Should the signals be computed instantaneously,
-#' i. e. should we either use a closed form for the signals or use the EM
-#' algorithm?
+#' @param instantaneous_signals Should the signals be computed instantaneously
 #' @param tau_estimation What is the time constant of estimation? Is not used if
 #' fixed_parameters is TRUE
 #' @param tau_inference What is the time constant of inference? Is not used if
 #' instantaneous signals is TRUE
-#' @param timestep timestep of the simulation
+#' @param timestep What resolution should the explicit learning
+#' trajectory have?
 #'
 #' @export
 
-simulate <- function(
-    implementation, stopping_rule,
+analyse <- function(
+    implementation,
+    stopping_rule,
     init_signals = "randnorm",
     init_parameters = "randortho",
     fixed_parameters = FALSE,
-    instantaneous_signals = FALSE,
+    instantaneous_signals = TRUE,
     tau_estimation,
     tau_inference,
-    timestep,
-    ...
+    timestep
 ) {
-    UseMethod("simulate")
+    UseMethod("analyse")
 }

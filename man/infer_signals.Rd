@@ -17,7 +17,7 @@ infer_signals(implementation, parameters, input,
 provides the random method to draw the parameters. Currently, only
 "randortho" is implemented.}
 
-\item{stopping_rule}{The \code{\link[=stopping_rule]{stopping_rule()}}}
+\item{stopping_rule}{The [stopping_rule()]}
 
 \item{timestep}{The timestep}
 

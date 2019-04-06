@@ -7,35 +7,97 @@ bibliography: [extrinsic-predicode.bib]
 [![Travis build status](https://travis-ci.org/sflippl/predicode.svg?branch=master)](https://travis-ci.org/sflippl/predicode)
 [![Coverage status](https://codecov.io/gh/sflippl/predicode/branch/master/graph/badge.svg)](https://codecov.io/github/sflippl/predicode?branch=master)
 
-```{r setup, include = FALSE}
+```{r setup, include = FALSE, message = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+library(predicode)
+library(pracma)
+library(tidyverse)
 ```
 # predicode
 
-Implementations of predictive coding networks are widespread, vary in their terminology, and are not always called predictive coding networks. Their rise in popularity within the neuroscience community is widely associated with @Rao1999, who used them to explain extraclassical effects in V1. A particularly popular important implementation is the free energy model [see @Friston2005], which had been inspired by the Helmholtz machine [@Dayan1995], which had not been called a predictive coding network, but nonetheless corresponded to that concept.
+Using the package 'predicode', predictive coding networks can easily be instantiated and simulated. Within R, the package can be downloaded from Github. This is easiest using 'devtools':
 
-Today, predictive coding as a framework is used to explain various phenomena within the brain. These include mirror neurons [@Kilner2007], binocular rivalry [@Hohwy2008], and self-recognition [@Apps2014]. However, there is no clear consensus on necessary and sufficient conditions for a model to be called predictive coding, calling into question whether this concept is articulated enough to be empirically tested [@Kogo2015]. Indeed, an often-cited weakness of predictive coding is the universality of this concept:
-
-> If you call everything a predictive coding model, then everything is a predictive coding model.
-> 
-> David Heeger [@nyu-debate, 1:10]
-
-Investigations of predictive coding models would benefit from a more coherent presentation that teases out the key components of predictive coding itself as well as the specifics of the presented implementation.
-
-This package therefore has a normative and a descriptive component to serve my investigation of predictive coding models. On the one hand, I argue that predictive coding models should be defined on a computational level (I will discuss my usage of this term below). On the other hand, I compile existing implementations of predictive coding within this framework. This is, for example, the basis for an investigation of their mathematical equivalence. If the interface and my definition of predictive coding prove themselves as useful, the package would also provide a suitable framework to specify and apply predictive coding implementations.
-
-## Installation
-
-You can install the current version of predicode from [Github](https://github.com/sflippl/predicode)
-
-``` r
+```{r echo = TRUE, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("sflippl/predicode")
 ```
 
-## References
+Currently, only fully connected layered architectures may be defined using the function 'layered_architecture'. This function requires as arguments the size of each layer (layers), the nonlinearity (transformation), and its derivative. For simplicity, a linear predictive coding network is considered, though a nonlinearity could be added using the arguments transformation and derivative.
+
+```{r echo = TRUE}
+arc <- 
+    layered_architecture(
+        layers = c(4L, 2L)
+    )
+arc
+```
+
+Using the function 'hpc', an input can then be added either as a matrix or as a function that returns a matrix for each time point $t\in\mathbb{R}^+_0$.
+
+```{r echo = TRUE}
+# Simulate some Gaussian data
+set.seed(328)
+params <- randortho(4)[,1:2]
+hidden <- matrix(rnorm(200), nrow = 2)
+data <- params %*% hidden
+hpc <- 
+    hpc(
+        architecture = arc, 
+        input = data
+    )
+```
+
+The minimal implementation 
+
+```{r echo = TRUE}
+impl <- implement_minimal(hpc)
+```
+
+may then be investigated using either a simulation (using the function 'simulate') or an analytical trajectory, where the function 'analyse' uses an interface that is consistent with 'simulate' and the functions 'explicit_inference' and 'explicit_estimation' provide a sparser interface. The simulations are dependent on the time constants, the timesteps, the initializations, and the stopping rules. As an example, the following code simulates the evolution of the network for 10 s:
+
+```{r echo = TRUE}
+sim <- 
+    simulate(
+        implementation = impl,
+        stopping_rule = stopping_rule(1000),
+        tau_estimation = 1,
+        tau_inference = 0.01,
+        timestep = 0.01
+    )
+sim
+```
+
+Explicit solutions are only available for either fixed parameters or isntantaneous signals. 'explicit_estimation', for example, assumes instantaneous signals:
+
+```{r echo = TRUE}
+# Results are not similar because different random initializations are being used.
+est <- 
+    explicit_estimation(
+        implementation = impl,
+        length_time = 10,
+        time_constant = 1,
+        timestep = 0.01
+    )
+est
+```
+
+The details on the different conceptual level are therefore mostly independent from each other, which makes the package easily extendible with new architectures, new types of input data, or new implementations, for example using the Free Energy Paradigm. Furthermore, the specification of the network abstracts from questions of their investigation that are instead adressed in the functions simulate and analyse. This means that such a package is suitable to collect both all possible versions of predictive coding and all explicit trajectories of these implementation. While the syntax is still subject to revisions, the general principles are assumed to be valuable for further research into predictive coding and related theories.
+
+In particular, using the pipe syntax, which is popular in R and replaces `f(x, y)` by `x %>% f(y)`, the specification of a network can be very concise. An explicit inference analagous to the estimation computed above is (without any prior requirements other than the data simulation) given by:
+
+```{r}
+c(4L, 2L) %>% 
+    layered_architecture() %>% 
+    hpc(data) %>% 
+    implement_minimal() %>% 
+    explicit_inference(
+        length_time = 1,
+        time_constant = 0.01,
+        timestep = 0.01
+    )
+```

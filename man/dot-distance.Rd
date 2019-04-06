@@ -11,7 +11,7 @@
 
 \item{list_2}{second list}
 
-\item{type}{type of \code{\link[=norm]{norm()}}}
+\item{type}{type of [norm()]}
 }
 \description{
 This function computes the distance for a list of matrices.

@@ -17,11 +17,11 @@ layered_architecture(layers, transformation = identity,
 \method{print}{linear_layered_architecture}(x, ...)
 }
 \arguments{
-\item{layers}{an \code{integer} vector. First element provides the input size.
+\item{layers}{an `integer` vector. First element provides the input size.
 Every other element provides a deeper layer.}
 
 \item{transformation}{What is the nonlinearity? Either a function or a list
-of functions with the same length as \code{layers}. Default is the identity
+of functions with the same length as `layers`. Default is the identity
 function. Functions must be vectorized.}
 }
 \description{

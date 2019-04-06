@@ -29,7 +29,8 @@ parameter_step.minimal_implementation <- function(
                     implementation_hpc() %>%
                     hpc_architecture() %>%
                     layer_derivative(l - 1)
-                (normalized_prediction_error[[l]] *
+                (ncol(input)-1)^(-1) *
+                    (normalized_prediction_error[[l]] *
                     derivative(parameters[[l]] %*% signals[[l]])) %*%
                     t(signals[[l]])
             }

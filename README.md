@@ -5,43 +5,127 @@
 predicode
 =========
 
-Implementations of predictive coding networks are widespread, vary in their terminology, and are not always called predictive coding networks. Their rise in popularity within the neuroscience community is widely associated with Rao and Ballard (1999), who used them to explain extraclassical effects in V1. A particularly popular important implementation is the free energy model (see K. Friston 2005), which had been inspired by the Helmholtz machine (Dayan et al. 1995), which had not been called a predictive coding network, but nonetheless corresponded to that concept.
-
-Today, predictive coding as a framework is used to explain various phenomena within the brain. These include mirror neurons (Kilner, Friston, and Frith 2007), binocular rivalry (Hohwy, Roepstorff, and Friston 2008), and self-recognition (Apps and Tsakiris 2014). However, there is no clear consensus on necessary and sufficient conditions for a model to be called predictive coding, calling into question whether this concept is articulated enough to be empirically tested (Kogo and Trengove 2015). Indeed, an often-cited weakness of predictive coding is the universality of this concept:
-
-> If you call everything a predictive coding model, then everything is a predictive coding model.
->
-> David Heeger (“NYU Debate: Does Hierarchical Predictive Coding Explain Perception?” 2018, 1:10)
-
-Investigations of predictive coding models would benefit from a more coherent presentation that teases out the key components of predictive coding itself as well as the specifics of the presented implementation.
-
-This package therefore has a normative and a descriptive component to serve my investigation of predictive coding models. On the one hand, I argue that predictive coding models should be defined on a computational level (I will discuss my usage of this term below). On the other hand, I compile existing implementations of predictive coding within this framework. This is, for example, the basis for an investigation of their mathematical equivalence. If the interface and my definition of predictive coding prove themselves as useful, the package would also provide a suitable framework to specify and apply predictive coding implementations.
-
-Installation
-------------
-
-You can install the current version of predicode from [Github](https://github.com/sflippl/predicode)
+Using the package 'predicode', predictive coding networks can easily be instantiated and simulated. Within R, the package can be downloaded from Github. This is easiest using 'devtools':
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("sflippl/predicode")
 ```
 
-References
-----------
+Currently, only fully connected layered architectures may be defined using the function 'layered\_architecture'. This function requires as arguments the size of each layer (layers), the nonlinearity (transformation), and its derivative. For simplicity, a linear predictive coding network is considered, though a nonlinearity could be added using the arguments transformation and derivative.
 
-Apps, Matthew A.J., and Manos Tsakiris. 2014. “The free-energy self: A predictive coding account of self-recognition.” *Neuroscience & Biobehavioral Reviews* 41 (April). Pergamon: 85–97. doi:[10.1016/J.NEUBIOREV.2013.01.029](https://doi.org/10.1016/J.NEUBIOREV.2013.01.029).
+``` r
+arc <- 
+    layered_architecture(
+        layers = c(4L, 2L)
+    )
+arc
+#> Layered linear architecture with 1 hidden layer.
+```
 
-Dayan, Peter, Geoffrey E. Hinton, Radford M. Neal, and Richard S. Zemel. 1995. “The Helmholtz Machine.” *Neural Computation* 7 (5). MIT Press 238 Main St., Suite 500, Cambridge, MA 02142‐1046 USA journals-info@mit.edu: 889–904. doi:[10.1162/neco.1995.7.5.889](https://doi.org/10.1162/neco.1995.7.5.889).
+Using the function 'hpc', an input can then be added either as a matrix or as a function that returns a matrix for each time point *t* ∈ ℝ<sub>0</sub><sup>+</sup>.
 
-Friston, Karl. 2005. “A theory of cortical responses.” *Philosophical Transactions of the Royal Society B* 360: 815–36. doi:[10.1098/rstb.2005.1622](https://doi.org/10.1098/rstb.2005.1622).
+``` r
+# Simulate some Gaussian data
+set.seed(328)
+params <- randortho(4)[,1:2]
+hidden <- matrix(rnorm(200), nrow = 2)
+data <- params %*% hidden
+hpc <- 
+    hpc(
+        architecture = arc, 
+        input = data
+    )
+```
 
-Hohwy, Jakob, Andreas Roepstorff, and Karl Friston. 2008. “Predictive coding explains binocular rivalry: An epistemological review.” *Cognition* 108 (3). Elsevier: 687–701. doi:[10.1016/J.COGNITION.2008.05.010](https://doi.org/10.1016/J.COGNITION.2008.05.010).
+The minimal implementation
 
-Kilner, James M., Karl J. Friston, and Chris D. Frith. 2007. “Predictive coding: an account of the mirror neuron system.” *Cognitive Processing* 8 (3). Springer-Verlag: 159–66. doi:[10.1007/s10339-007-0170-2](https://doi.org/10.1007/s10339-007-0170-2).
+``` r
+impl <- implement_minimal(hpc)
+```
 
-Kogo, Naoki, and Chris Trengove. 2015. “Is predictive coding theory articulated enough to be testable?” *Frontiers in Computational Neuroscience* 9 (111). Frontiers Media SA: 1–4. doi:[10.3389/fncom.2015.00111](https://doi.org/10.3389/fncom.2015.00111).
+may then be investigated using either a simulation (using the function 'simulate') or an analytical trajectory, where the function 'analyse' uses an interface that is consistent with 'simulate' and the functions 'explicit\_inference' and 'explicit\_estimation' provide a sparser interface. The simulations are dependent on the time constants, the timesteps, the initializations, and the stopping rules. As an example, the following code simulates the evolution of the network for 10 s:
 
-“NYU Debate: Does Hierarchical Predictive Coding Explain Perception?” 2018. Accessed December 10. <https://wp.nyu.edu/consciousness/predictive-coding/>.
+``` r
+sim <- 
+    simulate(
+        implementation = impl,
+        stopping_rule = stopping_rule(1000),
+        tau_estimation = 1,
+        tau_inference = 0.01,
+        timestep = 0.01
+    )
+sim
+#> # A tibble: 1,001 x 3
+#>     time signals    parameters
+#>    <dbl> <list>     <list>    
+#>  1  0    <list [1]> <list [1]>
+#>  2  0.01 <list [1]> <list [1]>
+#>  3  0.02 <list [1]> <list [1]>
+#>  4  0.03 <list [1]> <list [1]>
+#>  5  0.04 <list [1]> <list [1]>
+#>  6  0.05 <list [1]> <list [1]>
+#>  7  0.06 <list [1]> <list [1]>
+#>  8  0.07 <list [1]> <list [1]>
+#>  9  0.08 <list [1]> <list [1]>
+#> 10  0.09 <list [1]> <list [1]>
+#> # … with 991 more rows
+```
 
-Rao, Rajesh P. N., and Dana H. Ballard. 1999. “Predictive coding in the visual cortex: a functional interpretation of some extra-classical receptive-field effects.” *Nature Neuroscience* 2 (1). Nature Publishing Group: 79–87. doi:[10.1038/4580](https://doi.org/10.1038/4580).
+Explicit solutions are only available for either fixed parameters or isntantaneous signals. 'explicit\_estimation', for example, assumes instantaneous signals:
+
+``` r
+# Results are not similar because different random initializations are being used.
+est <- 
+    explicit_estimation(
+        implementation = impl,
+        length_time = 10,
+        time_constant = 1,
+        timestep = 0.01
+    )
+est
+#> # A tibble: 2,002 x 4
+#>     time principal_angle lower_bound upper_bound
+#>    <dbl>           <int>       <dbl>       <dbl>
+#>  1  0                  1       0.912       0.912
+#>  2  0                  2       0.375       0.375
+#>  3  0.01               1       0.913       0.913
+#>  4  0.01               2       0.377       0.378
+#>  5  0.02               1       0.914       0.914
+#>  6  0.02               2       0.379       0.380
+#>  7  0.03               1       0.915       0.916
+#>  8  0.03               2       0.381       0.382
+#>  9  0.04               1       0.915       0.917
+#> 10  0.04               2       0.382       0.385
+#> # … with 1,992 more rows
+```
+
+The details on the different conceptual level are therefore mostly independent from each other, which makes the package easily extendible with new architectures, new types of input data, or new implementations, for example using the Free Energy Paradigm. Furthermore, the specification of the network abstracts from questions of their investigation that are instead adressed in the functions simulate and analyse. This means that such a package is suitable to collect both all possible versions of predictive coding and all explicit trajectories of these implementation. While the syntax is still subject to revisions, the general principles are assumed to be valuable for further research into predictive coding and related theories.
+
+In particular, using the pipe syntax, which is popular in R and replaces `f(x, y)` by `x %>% f(y)`, the specification of a network can be very concise. An explicit inference analagous to the estimation computed above is (without any prior requirements other than the data simulation) given by:
+
+``` r
+c(4L, 2L) %>% 
+    layered_architecture() %>% 
+    hpc(data) %>% 
+    implement_minimal() %>% 
+    explicit_inference(
+        length_time = 1,
+        time_constant = 0.01,
+        timestep = 0.01
+    )
+#> # A tibble: 101 x 3
+#>     time untangled_signal tangled_signal 
+#>    <dbl> <list>           <list>         
+#>  1  0    <dbl [2 × 100]>  <dbl [2 × 100]>
+#>  2  0.01 <dbl [2 × 100]>  <dbl [2 × 100]>
+#>  3  0.02 <dbl [2 × 100]>  <dbl [2 × 100]>
+#>  4  0.03 <dbl [2 × 100]>  <dbl [2 × 100]>
+#>  5  0.04 <dbl [2 × 100]>  <dbl [2 × 100]>
+#>  6  0.05 <dbl [2 × 100]>  <dbl [2 × 100]>
+#>  7  0.06 <dbl [2 × 100]>  <dbl [2 × 100]>
+#>  8  0.07 <dbl [2 × 100]>  <dbl [2 × 100]>
+#>  9  0.08 <dbl [2 × 100]>  <dbl [2 × 100]>
+#> 10  0.09 <dbl [2 × 100]>  <dbl [2 × 100]>
+#> # … with 91 more rows
+```

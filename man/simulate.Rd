@@ -13,7 +13,7 @@
   instantaneous_signals_timestep = timestep,
   force_orthogonality = TRUE, ...)
 
-simulate(implementation, stopping_rule, init_signals = "randortho",
+simulate(implementation, stopping_rule, init_signals = "randnorm",
   init_parameters = "randortho", fixed_parameters = FALSE,
   instantaneous_signals = FALSE, tau_estimation, tau_inference, timestep,
   ...)
@@ -21,7 +21,7 @@ simulate(implementation, stopping_rule, init_signals = "randortho",
 \arguments{
 \item{implementation}{The implementation we are concerned with}
 
-\item{stopping_rule}{a \code{\link[=stopping_rule]{stopping_rule()}}}
+\item{stopping_rule}{a [stopping_rule()]}
 
 \item{tau_estimation}{What is the time constant of estimation? Is not used if
 fixed_parameters is TRUE}
@@ -29,8 +29,10 @@ fixed_parameters is TRUE}
 \item{tau_inference}{What is the time constant of inference? Is not used if
 instantaneous signals is TRUE}
 
+\item{timestep}{timestep of the simulation}
+
 \item{init_signals}{What is the signal value at time 0? As a string,
-provides the random method to draw the parameters. Currently, only "randortho"
+provides the random method to draw the parameters. Currently, only "randnorm"
 is implemented.}
 
 \item{init_parameters}{What is the parameter value at time 0? As a string,

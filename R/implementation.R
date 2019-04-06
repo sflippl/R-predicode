@@ -26,6 +26,7 @@ implement_minimal <- function(hpc, error_weights = NULL, ...) {
             length(error_weights) == architecture_depth(hpc) + 1
         )
         purrr::walk2(
+            error_weights,
             layers(hpc),
             function(x, y) {
                 checkmate::check_matrix(
